@@ -2,25 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Grade Application</title>
+  <title>School Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f5f9;
+      background: #e5e7eb;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    .container {
+    .card {
       background: white;
       padding: 30px;
+      width: 360px;
       border-radius: 12px;
-      width: 340px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
     }
     input {
       width: 90%;
@@ -30,59 +33,131 @@
       border: 1px solid #ccc;
     }
     button {
-      margin-top: 15px;
       padding: 10px 20px;
-      background: #2563eb;
+      background: #1d4ed8;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
+      margin-top: 10px;
     }
-    #result {
-      margin-top: 20px;
-      font-weight: bold;
+    table {
+      width: 100%;
+      margin-top: 15px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+    th {
+      background: #f3f4f6;
+    }
+    .hidden {
+      display: none;
+    }
+    .logout {
+      background: #dc2626;
+      margin-top: 15px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h2>Student Grade Checker</h2>
+  <!-- LOGIN PAGE -->
+  <div class="card" id="loginPage">
+    <h2>Student Login</h2>
+    <input type="text" id="loginId" placeholder="Student ID">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginMsg"></p>
+  </div>
 
-    <input type="text" id="name" placeholder="Student Name">
-    <input type="text" id="studentId" placeholder="Student ID">
+  <!-- DASHBOARD -->
+  <div class="card hidden" id="dashboard">
+    <h2>Student Dashboard</h2>
+    <p id="welcome"></p>
 
-    <button onclick="checkGrade()">Check Grade</button>
+    <table>
+      <tr>
+        <th>Subject</th>
+        <th>Grade</th>
+      </tr>
+      <tbody id="gradeTable"></tbody>
+    </table>
 
-    <div id="result"></div>
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 
   <script>
-    function checkGrade() {
-      const name = document.getElementById("name").value;
-      const id = document.getElementById("studentId").value;
-      const result = document.getElementById("result");
-
-      // fake grade database
-      const grades = {
-        "101": "A",
-        "102": "B+",
-        "103": "A-",
-        "104": "B"
-      };
-
-      if (name === "" || id === "") {
-        result.innerText = "Please fill in all fields.";
-        result.style.color = "red";
-      } else if (grades[id]) {
-        result.innerText = "Hello " + name + ", your grade is: " + grades[id];
-        result.style.color = "green";
-      } else {
-        result.innerText = "Student ID not found.";
-        result.style.color = "red";
+    // Fake student database
+    const students = {
+      "101": {
+        name: "Alex",
+        password: "1234",
+        grades: {
+          Math: "A",
+          English: "B+",
+          Biology: "A-",
+          Physics: "B"
+        }
+      },
+      "102": {
+        name: "Bella",
+        password: "abcd",
+        grades: {
+          Math: "B",
+          English: "A",
+          Biology: "A",
+          Physics: "B+"
+        }
       }
+    };
+
+    // Auto-login if stored
+    if (localStorage.getItem("studentId")) {
+      loadDashboard(localStorage.getItem("studentId"));
+    }
+
+    function login() {
+      const id = document.getElementById("loginId").value;
+      const pass = document.getElementById("loginPass").value;
+      const msg = document.getElementById("loginMsg");
+
+      if (students[id] && students[id].password === pass) {
+        localStorage.setItem("studentId", id);
+        loadDashboard(id);
+      } else {
+        msg.innerText = "Invalid ID or password";
+        msg.style.color = "red";
+      }
+    }
+
+    function loadDashboard(id) {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+
+      document.getElementById("welcome").innerText =
+        "Welcome, " + students[id].name;
+
+      const table = document.getElementById("gradeTable");
+      table.innerHTML = "";
+
+      for (let subject in students[id].grades) {
+        table.innerHTML += `
+          <tr>
+            <td>${subject}</td>
+            <td>${students[id].grades[subject]}</td>
+          </tr>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("studentId");
+      location.reload();
     }
   </script>
 
