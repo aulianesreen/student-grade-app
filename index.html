@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Grade Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 340px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Student Grade Checker</h2>
+
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="text" id="studentId" placeholder="Student ID">
+
+    <button onclick="checkGrade()">Check Grade</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function checkGrade() {
+      const name = document.getElementById("name").value;
+      const id = document.getElementById("studentId").value;
+      const result = document.getElementById("result");
+
+      // fake grade database
+      const grades = {
+        "101": "A",
+        "102": "B+",
+        "103": "A-",
+        "104": "B"
+      };
+
+      if (name === "" || id === "") {
+        result.innerText = "Please fill in all fields.";
+        result.style.color = "red";
+      } else if (grades[id]) {
+        result.innerText = "Hello " + name + ", your grade is: " + grades[id];
+        result.style.color = "green";
+      } else {
+        result.innerText = "Student ID not found.";
+        result.style.color = "red";
+      }
+    }
+  </script>
+
+</body>
+</html>
